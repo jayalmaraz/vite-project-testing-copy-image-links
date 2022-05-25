@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vouch Copy GIF w/ Link PoC</title>
+</head>
+
+<body>
+  <script type="module" src="/main.js"></script>
+  <script>
+    const VOUCH_URL = 'https://staging.vouchfor.com/c/pRbU8hBoKs';
+    const IMAGE_URL = 'https://emojis.slackmojis.com/emojis/images/1620607783/37205/kermit_pls.gif'
+    const IMAGE_LINK_STRING_HTML = `<a href="${VOUCH_URL}" target="_blank" rel="noreferer"><img width="256" src="${IMAGE_URL}"></a>`
+    const IMAGE_LINK_STRING_MARKDOWN = `[![Kermit the Frog](${IMAGE_URL} "Kermit the Frog")](${VOUCH_URL})`;
+
+    (function () {
+      document.addEventListener('DOMContentLoaded', () => {
+        document.getElementById('html-preview').innerText = IMAGE_LINK_STRING_HTML
+        document.getElementById('markdown-preview').innerText = IMAGE_LINK_STRING_MARKDOWN
+
+      }, false);
+    })();
+
+    function writeToClipboard(data) {
+      navigator.clipboard.write(data).then(
+        function () {
+          /* success */
+          console.log('SUCC clipboard ✅');
+        },
+        function (error) {
+          /* failure */
+          console.log('FAIL clipboard ❌', error);
+        }
+      );
+
+    }
+
+    // function setClipboard(content, type = 'text/html') {
+    //   var blob = new Blob([content], { type });
+    //   var data = [new ClipboardItem({ [type]: blob })];
+    //   writeToClipboard(data);
+    // }
+
+    // function selectAndCopyImageFromDOM() {
+    //   let selection = window.getSelection();
+    //   let container = document.querySelector('#copy-parent-container');
+    //   if (selection.rangeCount > 0) {
+    //     selection.removeAllRanges();
+    //   }
+    //   const range = document.createRange();
+    //   range.selectNode(container);
+    //   selection.addRange(range);
+    //   setClipboard(container.innerHTML);
+    // }
+
+    async function getImageFromUrl(url) {
+      return fetch(url)
+        .then(res => res.blob())
+    }
+
+    function getHtmlItem() {
+      return new Blob([IMAGE_LINK_STRING_HTML], { type: 'text/html' });
+    }
+
+    function getMarkdownItem() {
+      return new Blob([IMAGE_LINK_STRING_MARKDOWN], { type: 'text/plain' });
+    }
+
+    async function getImageItem() {
+      return getImageFromUrl('https://upload.wikimedia.org/wikipedia/commons/4/47/PNG_transparency_demonstration_1.png');
+    }
+
+    async function copyImageFromStringAllFormats({ html, markdown, image } = { html: true, markdown: true, image: true }) {
+      console.log({ html, markdown, image })
+      const icons = document.getElementsByClassName('icon')
+      for (var i = 0; i < icons.length; i++) {
+        icons[i].innerText = ''
+      }
+
+      const items = {
+        ...(html && { 'text/html': getHtmlItem() }),
+        ...(markdown && { 'text/plain': getMarkdownItem() }),
+        ...(image && { 'image/png': await getImageItem() }),
+      }
+      var data = [new ClipboardItem(items)];
+      writeToClipboard(data);
+
+      const checkId = `${html ? 'html' : ''}${markdown ? 'markdown' : ''}${image ? 'image' : ''}`
+      document.getElementById(checkId).innerText = '✅'
+    }
+  </script>
+
+  <div id="copy-parent-container" class="preformat">
+    <a href="https://staging.vouchfor.com/c/pRbU8hBoKs" target="_blank" rel="noreferer">
+      <img width="256" src="https://emojis.slackmojis.com/emojis/images/1620607783/37205/kermit_pls.gif" />
+    </a>
+  </div>
+
+  <div style="padding-top: 32px; display: block;">
+    <button onclick="copyImageFromStringAllFormats({html: true})">Copy HTML</button><span id="html" class="icon"></span>
+    <br />
+    <button onclick="copyImageFromStringAllFormats({html: true, image: true})">Copy HTML + Image</button><span
+      id="htmlimage" class="icon"></span>
+    <br />
+    <button onclick="copyImageFromStringAllFormats({html: true, markdown: true})">Copy HTML + Markdown</button><span
+      id="htmlmarkdown" class="icon"></span>
+    <br />
+    <button onclick="copyImageFromStringAllFormats({html: true, markdown: true, image: true})">Copy HTML + Markdown +
+      Image</button><span id="htmlmarkdownimage" class="icon"></span>
+  </div>
+
+  <h1>
+    Raw previews
+  </h1>
+
+  <h2>
+    HTML
+  </h2>
+  <div class="preformat">
+    <code id="html-preview">What</code>
+  </div>
+
+  <h2>
+    Markdown
+  </h2>
+  <div class="preformat">
+    <code id="markdown-preview"></code>
+  </div>
+</body>
+
+<style>
+  button {
+    margin: 4px 0;
+  }
+
+  .preformat {
+    background-color: #ececec;
+    padding: 8px;
+    overflow-x: auto;
+    margin: 4px 0;
+    border-radius: 4px;
+  }
+
+  .icon {
+    padding: 8px
+  }
+</style>
+
+</html>
