@@ -13,6 +13,8 @@
   <script>
     const VOUCH_URL = 'https://staging.vouchfor.com/c/pRbU8hBoKs';
     const IMAGE_URL = 'https://emojis.slackmojis.com/emojis/images/1620607783/37205/kermit_pls.gif'
+    // const PNG_URL = 'https://upload.wikimedia.org/wikipedia/commons/4/47/PNG_transparency_demonstration_1.png';
+    const PNG_URL = '/little-green-frog-buddy.png';
     const IMAGE_LINK_STRING_HTML = `<a href="${VOUCH_URL}" target="_blank" rel="noreferer"><img width="256" src="${IMAGE_URL}"></a>`
     const IMAGE_LINK_STRING_MARKDOWN = `[![Kermit the Frog](${IMAGE_URL} "Kermit the Frog")](${VOUCH_URL})`;
 
@@ -20,6 +22,7 @@
       document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('html-preview').innerText = IMAGE_LINK_STRING_HTML
         document.getElementById('markdown-preview').innerText = IMAGE_LINK_STRING_MARKDOWN
+        document.getElementById('image-preview').src = PNG_URL
 
       }, false);
     })();
@@ -70,7 +73,7 @@
     }
 
     async function getImageItem() {
-      return getImageFromUrl('https://upload.wikimedia.org/wikipedia/commons/4/47/PNG_transparency_demonstration_1.png');
+      return getImageFromUrl(PNG_URL);
     }
 
     async function copyImageFromStringAllFormats({ html, markdown, image } = { html: true, markdown: true, image: true }) {
@@ -129,6 +132,12 @@
   <div class="preformat">
     <code id="markdown-preview"></code>
   </div>
+
+  <h2>
+    Image
+  </h2>
+  <p>(Meant to be Kermit but for now this is the .png that we copy to the clipboard)</p>
+  <img width="360" id="image-preview" />
 </body>
 
 <style>
